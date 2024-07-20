@@ -3,12 +3,13 @@ package com.jnjuste.hospitalms.services;
 import com.jnjuste.hospitalms.models.Nurse;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface NurseService {
     Nurse saveNurse(Nurse nurse);
-    Nurse getNurseById(UUID id);
     List<Nurse> getAllNurses();
-    Nurse updateNurse(UUID id, Nurse nurse);
+    Optional<Nurse> getNurseById(UUID id);
+    Nurse updateNurse(UUID id, Nurse nurseDetails);
     void deleteNurse(UUID id);
 }

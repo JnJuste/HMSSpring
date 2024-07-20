@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -15,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "patients")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,28 +28,18 @@ public class Patient {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column(nullable = false)
+    private Date dateOfBirth;
 
     @Column(nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
-    private LocalDate dateOfBirth;
+    private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Gender gender;
 
-    @Column(nullable = false)
-    private String address;
-
-    private String emergencyContactName;
-
-    private String emergencyContactPhone;
-
-    @Column(length = 1000)
-    private String medicalHistory;
-
-    private LocalDate registrationDate;
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private Set<Appointment> appointments;
 }

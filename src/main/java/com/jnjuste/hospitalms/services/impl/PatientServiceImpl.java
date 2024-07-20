@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,30 +26,27 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient getPatientById(UUID id) {
-        return patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-    }
-
-    @Override
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
 
     @Override
-    public Patient updatePatient(UUID id, Patient patient) {
-        Patient existingPatient = getPatientById(id);
-        existingPatient.setFirstName(patient.getFirstName());
-        existingPatient.setLastName(patient.getLastName());
-        existingPatient.setEmail(patient.getEmail());
-        existingPatient.setPhoneNumber(patient.getPhoneNumber());
-        existingPatient.setDateOfBirth(patient.getDateOfBirth());
-        existingPatient.setGender(patient.getGender());
-        existingPatient.setAddress(patient.getAddress());
-        existingPatient.setEmergencyContactName(patient.getEmergencyContactName());
-        existingPatient.setEmergencyContactPhone(patient.getEmergencyContactPhone());
-        existingPatient.setMedicalHistory(patient.getMedicalHistory());
-        return patientRepository.save(existingPatient);
+    public Optional<Patient> getPatientById(UUID id) {
+        return patientRepository.findById(id);
+    }
+
+    @Override
+    public Patient updatePatient(UUID id, Patient patientDetails) {
+        return patientRepository.findById(id).map(existingPatient -> {
+            existingPatient.setFirstName(patientDetails.getFirstName());
+            existingPatient.setLastName(patientDetails.getLastName());
+            existingPatient.setDateOfBirth(patientDetails.getDateOfBirth());
+            existingPatient.setPhoneNumber(patientDetails.getPhoneNumber());
+            existingPatient.setEmail(patientDetails.getEmail());
+            existingPatient.setGender(patientDetails.getGender());
+            // Don't update appointments here. They should be managed separately
+            return patientRepository.save(existingPatient);
+        }).orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
     }
 
     @Override

@@ -6,35 +6,27 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+
 
 import java.util.Set;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
+@Data
 @NoArgsConstructor
-@SuperBuilder
 @Entity
+@Table(name = "doctors")
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Doctor extends User {
+
+    @Column(nullable = false, unique = true)
+    private String regNumber;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    private Specialty specialty;
+
+    @Enumerated(EnumType.STRING)
     private EmploymentType employmentType;
 
-    @ElementCollection(targetClass = Specialty.class)
-    @CollectionTable(name = "doctor_specialties", joinColumns = @JoinColumn(name = "doctor_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "specialty", nullable = false)
-    private Set<Specialty> specialties;
-
-    @Column(nullable = false)
-    private String licenseNumber;
-
-    @Column(nullable = false)
-    private int yearsOfExperience;
-
-    @Column(length = 1000)
-    private String biography;
-
-    @Column(nullable = false)
-    private boolean isAvailable;
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private Set<Appointment> appointments;
 }

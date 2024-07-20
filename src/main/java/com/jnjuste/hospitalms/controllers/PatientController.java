@@ -3,6 +3,7 @@ package com.jnjuste.hospitalms.controllers;
 import com.jnjuste.hospitalms.models.Patient;
 import com.jnjuste.hospitalms.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,27 +23,32 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-        return ResponseEntity.ok(patientService.savePatient(patient));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable UUID id) {
-        return ResponseEntity.ok(patientService.getPatientById(id));
+        Patient savedPatient = patientService.savePatient(patient);
+        return new ResponseEntity<>(savedPatient, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
-        return ResponseEntity.ok(patientService.getAllPatients());
+        List<Patient> patients = patientService.getAllPatients();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Patient> getPatientById(@PathVariable UUID id) {
+        return patientService.getPatientById(id)
+                .map(patient -> new ResponseEntity<>(patient, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable UUID id, @RequestBody Patient patient) {
-        return ResponseEntity.ok(patientService.updatePatient(id, patient));
+    public ResponseEntity<Patient> updatePatient(@PathVariable UUID id, @RequestBody Patient patientDetails) {
+        Patient updatedPatient = patientService.updatePatient(id, patientDetails);
+        return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable UUID id) {
         patientService.deletePatient(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
