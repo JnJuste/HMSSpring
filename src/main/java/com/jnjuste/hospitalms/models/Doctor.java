@@ -1,32 +1,51 @@
 package com.jnjuste.hospitalms.models;
 
 import com.jnjuste.hospitalms.models.enums.EmploymentType;
+import com.jnjuste.hospitalms.models.enums.Gender;
+import com.jnjuste.hospitalms.models.enums.Role;
 import com.jnjuste.hospitalms.models.enums.Specialty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
 
-import java.util.Set;
-
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-@Table(name = "doctors")
-@PrimaryKeyJoinColumn(name = "user_id")
-public class Doctor extends User {
+public class Doctor{
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID userID;
 
     @Column(nullable = false, unique = true)
     private String regNumber;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Enumerated(EnumType.STRING)
     private Specialty specialty;
 
     @Enumerated(EnumType.STRING)
     private EmploymentType employmentType;
-
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    private Set<Appointment> appointments;
 }

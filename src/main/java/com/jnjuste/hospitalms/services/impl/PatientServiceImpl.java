@@ -44,6 +44,7 @@ public class PatientServiceImpl implements PatientService {
             existingPatient.setPhoneNumber(patientDetails.getPhoneNumber());
             existingPatient.setEmail(patientDetails.getEmail());
             existingPatient.setGender(patientDetails.getGender());
+            existingPatient.setReason(patientDetails.getReason());
             // Don't update appointments here. They should be managed separately
             return patientRepository.save(existingPatient);
         }).orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));

@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.Set;
+
 import java.util.UUID;
 
 @Data
@@ -16,11 +16,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "patients")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID patientID;
 
     @Column(nullable = false)
     private String firstName;
@@ -40,6 +39,5 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private Set<Appointment> appointments;
+    private String reason;
 }

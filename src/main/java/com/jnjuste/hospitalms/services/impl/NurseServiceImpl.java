@@ -38,10 +38,12 @@ public class NurseServiceImpl implements NurseService {
     public Nurse updateNurse(UUID id, Nurse nurseDetails) {
         return nurseRepository.findById(id).map(existingNurse -> {
             // Update User fields
+            existingNurse.setRegNumber(nurseDetails.getRegNumber());
             existingNurse.setFirstName(nurseDetails.getFirstName());
             existingNurse.setLastName(nurseDetails.getLastName());
             existingNurse.setEmail(nurseDetails.getEmail());
             existingNurse.setGender(nurseDetails.getGender());
+            existingNurse.setDoctor(nurseDetails.getDoctor());
             // Update Nurse-specific fields if any
             // Currently, there are no Nurse-specific fields in the provided entity
             return nurseRepository.save(existingNurse);

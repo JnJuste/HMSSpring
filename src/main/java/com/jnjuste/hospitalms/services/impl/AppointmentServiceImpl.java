@@ -38,6 +38,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Appointment updateAppointment(UUID id, Appointment appointmentDetails) {
         return appointmentRepository.findById(id).map(existingAppointment -> {
             // Only update fields that are allowed to be changed
+            existingAppointment.setDoctor(appointmentDetails.getDoctor());
+            existingAppointment.setPatient(appointmentDetails.getPatient());
             existingAppointment.setStartTime(appointmentDetails.getStartTime());
             existingAppointment.setEndTime(appointmentDetails.getEndTime());
             existingAppointment.setDurationMinutes(appointmentDetails.getDurationMinutes());

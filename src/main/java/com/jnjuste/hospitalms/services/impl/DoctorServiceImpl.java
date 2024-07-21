@@ -38,6 +38,7 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor updateDoctor(UUID id, Doctor doctorDetails) {
         return doctorRepository.findById(id).map(existingDoctor -> {
             // Update User fields
+            existingDoctor.setRegNumber(doctorDetails.getRegNumber());
             existingDoctor.setFirstName(doctorDetails.getFirstName());
             existingDoctor.setLastName(doctorDetails.getLastName());
             existingDoctor.setEmail(doctorDetails.getEmail());
