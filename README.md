@@ -38,13 +38,13 @@ The Hospital Management System is a web application designed to manage hospital 
 1. **Clone the repository:**
     ```bash
     git clone https://github.com/JnJuste/HMSSpring.git
-    cd hospital-management-system
+    cd HMSSpring
     ```
 
 2. **Update application properties:**
     Configure your database connection in `src/main/resources/application.properties`.
     ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/{hospitaldb}
+    spring.datasource.url=jdbc:mysql://localhost:3306/{your_database_name}
     spring.datasource.username={your_username}
     spring.datasource.password={your_password}
     spring.jpa.hibernate.ddl-auto=update
