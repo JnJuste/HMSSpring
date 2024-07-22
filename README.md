@@ -44,9 +44,9 @@ The Hospital Management System is a web application designed to manage hospital 
 2. **Update application properties:**
     Configure your database connection in `src/main/resources/application.properties`.
     ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/hospitaldb
-    spring.datasource.username=root
-    spring.datasource.password=password
+    spring.datasource.url=jdbc:mysql://localhost:3306/{hospitaldb}
+    spring.datasource.username={your_username}
+    spring.datasource.password={your_password}
     spring.jpa.hibernate.ddl-auto=update
     spring.jpa.show-sql=true
     ```
@@ -88,8 +88,8 @@ The Hospital Management System is a web application designed to manage hospital 
           "password": "password123",
           "email": "jean.doe@example.com",
           "role": "DOCTOR",
-          "gender": "MALE",
-          "specialty": "CARDIOLOGY",
+          "gender": "M",
+          "specialty": "Surgeon",
           "employmentType": "FULL_TIME",
           "nationalID": 12345678
       }
@@ -124,8 +124,8 @@ The Hospital Management System is a web application designed to manage hospital 
           "firstName": "Jean",
           "lastName": "Doe",
           "email": "jean.doe@example.com",
-          "gender": "MALE",
-          "specialty": "NEUROLOGY",
+          "gender": "M",
+          "specialty": "Neurologist",
           "employmentType": "PART_TIME"
       }
       ```
@@ -147,7 +147,7 @@ The Hospital Management System is a web application designed to manage hospital 
           "password": "password123",
           "email": "mary.jane@example.com",
           "role": "NURSE",
-          "gender": "FEMALE",
+          "gender": "F",
           "doctor": {
               "userID": "uuid-of-doctor"
           },
