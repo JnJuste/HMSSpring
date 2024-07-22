@@ -2,6 +2,7 @@ package com.jnjuste.hospitalms.services.impl;
 
 import com.jnjuste.hospitalms.models.NurseRegNumberSequence;
 import com.jnjuste.hospitalms.repositories.NurseRegNumberSequenceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class NurseRegNumberServiceImpl {
 
     private final NurseRegNumberSequenceRepository nurseRegNumberSequenceRepository;
-
+    private static final String PREFIX = "NR";
+    @Autowired
     public NurseRegNumberServiceImpl(NurseRegNumberSequenceRepository nurseRegNumberSequenceRepository) {
         this.nurseRegNumberSequenceRepository = nurseRegNumberSequenceRepository;
     }
@@ -39,6 +41,6 @@ public class NurseRegNumberServiceImpl {
         sequence.setLastRegNumber(nextRegNumber);
         nurseRegNumberSequenceRepository.save(sequence);
 
-        return nextRegNumber;
+        return PREFIX + nextRegNumber;
     }
 }

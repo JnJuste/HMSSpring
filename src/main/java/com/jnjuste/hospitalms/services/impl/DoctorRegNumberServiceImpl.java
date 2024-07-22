@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DoctorRegNumberServiceImpl {
 
     private final DoctorRegNumberSequenceRepository doctorRegNumberSequenceRepository;
+    private static final String PREFIX = "DR";
     @Autowired
     public DoctorRegNumberServiceImpl(DoctorRegNumberSequenceRepository doctorRegNumberSequenceRepository) {
         this.doctorRegNumberSequenceRepository = doctorRegNumberSequenceRepository;
@@ -40,6 +41,6 @@ public class DoctorRegNumberServiceImpl {
         sequence.setLastRegNumber(nextRegNumber);
         doctorRegNumberSequenceRepository.save(sequence);
 
-        return nextRegNumber;
+        return PREFIX + nextRegNumber;
     }
 }
