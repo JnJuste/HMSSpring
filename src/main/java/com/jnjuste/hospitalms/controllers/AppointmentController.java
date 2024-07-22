@@ -37,6 +37,12 @@ public class AppointmentController {
         return appointment.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @GetMapping("/appointmentNumber/{appointmentNumber}")
+    public ResponseEntity<Appointment> getAppointmentByAppointmentNumber(@PathVariable String appointmentNumber) {
+        Optional<Appointment> appointment = appointmentService.getAppointmentByAppointmentNumber(appointmentNumber);
+        return appointment.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Appointment> updateAppointment(@PathVariable UUID id, @RequestBody Appointment appointmentDetails) {

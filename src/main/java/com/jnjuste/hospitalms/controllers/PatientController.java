@@ -43,6 +43,12 @@ public class PatientController {
         return patient.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @GetMapping("/patientNumber/{patientNumber}")
+    public ResponseEntity<Patient> getPatientByPatientNumber(@PathVariable String patientNumber) {
+        Optional<Patient> patient = patientService.getPatientByPatientNumber(patientNumber);
+        return patient.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(@PathVariable UUID id, @RequestBody Patient patientDetails) {
         try {

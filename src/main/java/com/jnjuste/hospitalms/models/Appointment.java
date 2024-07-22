@@ -20,6 +20,9 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID appointmentID;
 
+    @Column(nullable = false, unique = true)
+    private String appointmentNumber;
+
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;

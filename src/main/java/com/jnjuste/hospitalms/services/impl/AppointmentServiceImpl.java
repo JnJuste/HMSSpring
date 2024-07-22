@@ -13,14 +13,17 @@ import java.util.UUID;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
+    private final AppointmentNumberServiceImpl appointmentNumberServiceImpl;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentNumberServiceImpl appointmentNumberServiceImpl) {
         this.appointmentRepository = appointmentRepository;
+        this.appointmentNumberServiceImpl = appointmentNumberServiceImpl;
     }
 
     @Override
     public Appointment saveAppointment(Appointment appointment) {
+        appointment.setAppointmentNumber(appointmentNumberServiceImpl.getNextAppointmentNumber());
         return appointmentRepository.save(appointment);
     }
 
@@ -51,6 +54,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void deleteAppointment(UUID id) {
         appointmentRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Appointment> getAppointmentByAppointmentNumber(String appointmentNumber) {
+        return appointmentRepository.findByAppointmentNumber(appointmentNumber);
     }
 
 }

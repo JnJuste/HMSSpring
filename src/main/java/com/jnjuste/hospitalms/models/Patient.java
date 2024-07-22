@@ -22,6 +22,9 @@ public class Patient {
     private UUID patientID;
 
     @Column(nullable = false, unique = true)
+    private String patientNumber;
+
+    @Column(nullable = false, unique = true)
     private Integer nationalID;
 
     @Column(nullable = false)

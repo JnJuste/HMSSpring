@@ -10,9 +10,7 @@ public interface AppointmentService {
     Appointment saveAppointment(Appointment appointment);
     List<Appointment> getAllAppointments();
     Optional<Appointment> getAppointmentById(UUID id);
-
-
     Appointment updateAppointment(UUID id, Appointment appointmentDetails);
-
     void deleteAppointment(UUID id);
+    Optional<Appointment> getAppointmentByAppointmentNumber (String appointmentNumber);
 }

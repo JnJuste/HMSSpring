@@ -14,14 +14,17 @@ import java.util.UUID;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
+    private final PatientNumberServiceImpl patientNumberServiceImpl;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, PatientNumberServiceImpl patientNumberServiceImpl) {
         this.patientRepository = patientRepository;
+        this.patientNumberServiceImpl = patientNumberServiceImpl;
     }
 
     @Override
     public Patient savePatient(Patient patient) {
+        patient.setPatientNumber(patientNumberServiceImpl.getNextPatientNumber());
         return patientRepository.save(patient);
     }
 
@@ -59,5 +62,10 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Optional<Patient> getPatientByNationalID(Integer nationalID) {
         return patientRepository.findByNationalID(nationalID);
+    }
+
+    @Override
+    public Optional<Patient> getPatientByPatientNumber(String patientNumber) {
+        return patientRepository.findByPatientNumber(patientNumber);
     }
 }

@@ -13,4 +13,5 @@ public interface PatientService {
     Patient updatePatient(UUID id, Patient patientDetails);
     void deletePatient(UUID id);
     Optional<Patient> getPatientByNationalID(Integer nationalID);
+    Optional<Patient> getPatientByPatientNumber(String patientNumber);
 }
