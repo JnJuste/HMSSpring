@@ -13,14 +13,17 @@ import java.util.UUID;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
+    private final RegNumberServiceImpl regNumberServiceImpl;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepository doctorRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, RegNumberServiceImpl regNumberServiceImpl) {
         this.doctorRepository = doctorRepository;
+        this.regNumberServiceImpl = regNumberServiceImpl;
     }
 
     @Override
     public Doctor saveDoctor(Doctor doctor) {
+        doctor.setRegNumber(regNumberServiceImpl.getNextRegNumber());
         return doctorRepository.save(doctor);
     }
 
@@ -38,7 +41,6 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor updateDoctor(UUID id, Doctor doctorDetails) {
         return doctorRepository.findById(id).map(existingDoctor -> {
             // Update User fields
-            existingDoctor.setRegNumber(doctorDetails.getRegNumber());
             existingDoctor.setFirstName(doctorDetails.getFirstName());
             existingDoctor.setLastName(doctorDetails.getLastName());
             existingDoctor.setEmail(doctorDetails.getEmail());

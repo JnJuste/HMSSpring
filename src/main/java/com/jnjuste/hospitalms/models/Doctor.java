@@ -20,7 +20,7 @@ import java.util.UUID;
 public class Doctor{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID userID;
+    private UUID doctorID;
 
     @Column(nullable = false, unique = true)
     private String regNumber;
