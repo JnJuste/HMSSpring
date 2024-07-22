@@ -12,4 +12,7 @@ public interface DoctorService {
     Optional<Doctor> getDoctorById(UUID id);
     Doctor updateDoctor(UUID id, Doctor doctorDetails);
     void deleteDoctor(UUID id);
+    Optional<Doctor> getDoctorByEmail(String email);
+    Optional<Doctor> getDoctorByNationalID(Integer nationalID);
+    Optional<Doctor> getDoctorByRegNumber(String regNumber);
 }

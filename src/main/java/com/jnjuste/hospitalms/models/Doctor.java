@@ -25,6 +25,9 @@ public class Doctor{
     @Column(nullable = false, unique = true)
     private String regNumber;
 
+    @Column(nullable = false, unique = true)
+    private Integer nationalID;
+
     @Column(nullable = false)
     private String firstName;
 

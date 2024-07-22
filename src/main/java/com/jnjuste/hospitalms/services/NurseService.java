@@ -12,4 +12,7 @@ public interface NurseService {
     Optional<Nurse> getNurseById(UUID id);
     Nurse updateNurse(UUID id, Nurse nurseDetails);
     void deleteNurse(UUID id);
+    Optional<Nurse> getNurseByEmail(String email);
+    Optional<Nurse> getNurseByNationalID(Integer nationalID);
+    Optional<Nurse> getNurseByRegNumber(String regNumber);
 }

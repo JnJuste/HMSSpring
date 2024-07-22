@@ -18,10 +18,13 @@ import java.util.UUID;
 public class Nurse{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID userID;
+    private UUID nurseID;
 
     @Column(nullable = false, unique = true)
     private String regNumber;
+
+    @Column(nullable = false, unique = true)
+    private Integer nationalID;
 
     @Column(nullable = false)
     private String firstName;

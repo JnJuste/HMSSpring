@@ -21,6 +21,9 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID patientID;
 
+    @Column(nullable = false, unique = true)
+    private Integer nationalID;
+
     @Column(nullable = false)
     private String firstName;
 
@@ -39,5 +42,6 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(nullable = false)
     private String reason;
 }

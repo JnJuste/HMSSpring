@@ -37,7 +37,12 @@ public class PatientController {
         return patient.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
+    @GetMapping("/nationalID/{nationalID}")
+    public ResponseEntity<Patient> getPatientByNationalID(@PathVariable Integer nationalID) {
+        Optional<Patient> patient = patientService.getPatientByNationalID(nationalID);
+        return patient.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(@PathVariable UUID id, @RequestBody Patient patientDetails) {
         try {

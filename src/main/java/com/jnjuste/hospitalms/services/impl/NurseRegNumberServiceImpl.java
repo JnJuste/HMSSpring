@@ -1,26 +1,25 @@
 package com.jnjuste.hospitalms.services.impl;
 
-import com.jnjuste.hospitalms.models.RegNumberSequence;
-import com.jnjuste.hospitalms.repositories.RegNumberSequenceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.jnjuste.hospitalms.models.NurseRegNumberSequence;
+import com.jnjuste.hospitalms.repositories.NurseRegNumberSequenceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class RegNumberServiceImpl {
+public class NurseRegNumberServiceImpl {
 
-    private final RegNumberSequenceRepository regNumberSequenceRepository;
-    @Autowired
-    public RegNumberServiceImpl(RegNumberSequenceRepository regNumberSequenceRepository) {
-        this.regNumberSequenceRepository = regNumberSequenceRepository;
+    private final NurseRegNumberSequenceRepository nurseRegNumberSequenceRepository;
+
+    public NurseRegNumberServiceImpl(NurseRegNumberSequenceRepository nurseRegNumberSequenceRepository) {
+        this.nurseRegNumberSequenceRepository = nurseRegNumberSequenceRepository;
     }
 
     @Transactional
     public String getNextRegNumber() {
-        RegNumberSequence sequence = regNumberSequenceRepository.findAll().stream().findFirst().orElse(null);
+        NurseRegNumberSequence sequence = nurseRegNumberSequenceRepository.findAll().stream().findFirst().orElse(null);
 
         if (sequence == null) {
-            sequence = new RegNumberSequence();
+            sequence = new NurseRegNumberSequence();
             sequence.setLastRegNumber("0000-00");
         }
 
@@ -38,7 +37,7 @@ public class RegNumberServiceImpl {
 
         String nextRegNumber = String.format("%04d-%02d", part1, part2);
         sequence.setLastRegNumber(nextRegNumber);
-        regNumberSequenceRepository.save(sequence);
+        nurseRegNumberSequenceRepository.save(sequence);
 
         return nextRegNumber;
     }

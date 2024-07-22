@@ -38,6 +38,8 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient updatePatient(UUID id, Patient patientDetails) {
         return patientRepository.findById(id).map(existingPatient -> {
+            // Update Patient fields
+            // The patientID and NationalID remain unchanged
             existingPatient.setFirstName(patientDetails.getFirstName());
             existingPatient.setLastName(patientDetails.getLastName());
             existingPatient.setDateOfBirth(patientDetails.getDateOfBirth());
@@ -53,5 +55,9 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void deletePatient(UUID id) {
         patientRepository.deleteById(id);
+    }
+    @Override
+    public Optional<Patient> getPatientByNationalID(Integer nationalID) {
+        return patientRepository.findByNationalID(nationalID);
     }
 }

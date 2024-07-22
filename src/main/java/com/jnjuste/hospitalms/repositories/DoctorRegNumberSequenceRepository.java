@@ -1,9 +1,9 @@
 package com.jnjuste.hospitalms.repositories;
 
-import com.jnjuste.hospitalms.models.RegNumberSequence;
+import com.jnjuste.hospitalms.models.DoctorRegNumberSequence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RegNumberSequenceRepository extends JpaRepository<RegNumberSequence, Long> {
+public interface DoctorRegNumberSequenceRepository extends JpaRepository<DoctorRegNumberSequence, Long> {
 }

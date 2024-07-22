@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-public class RegNumberSequence {
+public class DoctorRegNumberSequence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -13,14 +13,17 @@ import java.util.UUID;
 @Service
 public class NurseServiceImpl implements NurseService {
     private final NurseRepository nurseRepository;
+    private final NurseRegNumberServiceImpl nurseRegNumberServiceImpl;
 
     @Autowired
-    public NurseServiceImpl(NurseRepository nurseRepository) {
+    public NurseServiceImpl(NurseRepository nurseRepository, NurseRegNumberServiceImpl nurseRegNumberServiceImpl) {
         this.nurseRepository = nurseRepository;
+        this.nurseRegNumberServiceImpl = nurseRegNumberServiceImpl;
     }
 
     @Override
     public Nurse saveNurse(Nurse nurse) {
+        nurse.setRegNumber(nurseRegNumberServiceImpl.getNextRegNumber());
         return nurseRepository.save(nurse);
     }
 
@@ -37,10 +40,11 @@ public class NurseServiceImpl implements NurseService {
     @Override
     public Nurse updateNurse(UUID id, Nurse nurseDetails) {
         return nurseRepository.findById(id).map(existingNurse -> {
-            // Update User fields
-            existingNurse.setRegNumber(nurseDetails.getRegNumber());
+            // Update Nurse fields
+            // The nurseID, RegNumber and NationalID remain unchanged
             existingNurse.setFirstName(nurseDetails.getFirstName());
             existingNurse.setLastName(nurseDetails.getLastName());
+            existingNurse.setPassword(nurseDetails.getPassword());
             existingNurse.setEmail(nurseDetails.getEmail());
             existingNurse.setGender(nurseDetails.getGender());
             existingNurse.setDoctor(nurseDetails.getDoctor());
@@ -53,5 +57,20 @@ public class NurseServiceImpl implements NurseService {
     @Override
     public void deleteNurse(UUID id) {
         nurseRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Nurse> getNurseByEmail(String email) {
+        return nurseRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<Nurse> getNurseByNationalID(Integer nationalID) {
+        return nurseRepository.findByNationalID(nationalID);
+    }
+
+    @Override
+    public Optional<Nurse> getNurseByRegNumber(String regNumber) {
+        return nurseRepository.findByRegNumber(regNumber);
     }
 }

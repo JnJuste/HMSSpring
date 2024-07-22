@@ -38,6 +38,27 @@ public class NurseController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Nurse> getNurseByEmail(@PathVariable String email) {
+        Optional<Nurse> nurse = nurseService.getNurseByEmail(email);
+        return nurse.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/nationalID/{nationalID}")
+    public ResponseEntity<Nurse> getNurseByNationalID(@PathVariable Integer nationalID) {
+        Optional<Nurse> nurse = nurseService.getNurseByNationalID(nationalID);
+        return nurse.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/regNumber/{regNumber}")
+    public ResponseEntity<Nurse> getNurseByRegNumber(@PathVariable String regNumber) {
+        Optional<Nurse> nurse = nurseService.getNurseByRegNumber(regNumber);
+        return nurse.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Nurse> updateNurse(@PathVariable UUID id, @RequestBody Nurse nurseDetails) {
         try {
