@@ -8,8 +8,8 @@ The Hospital Management System is a web application designed to manage hospital 
 
 - **Doctor Management**: Create, update, delete, and view doctors. Each doctor has a unique registration number in the format `DRxxxx-xx`.
 - **Nurse Management**: Create, update, delete, and view nurses. Each nurse has a unique registration number in the format `NRxxxx-xx`.
-- **Patient Management**: Create, update, delete, and view patients.
-- **Appointment Scheduling**: Schedule and manage appointments between doctors and patients.
+- **Patient Management**: Create, update, delete, and view patients. Each patient has a unique registration number in the format `PAxxxx-xx`.
+- **Appointment Scheduling**: Schedule and manage appointments between doctors and patients. Each appointment has a unique registration number in the format `APPxxxx-xx`.
 - **User Authentication**: Login functionality with role-based access control.
 - **Email Notifications**: Send notifications via email for important events.
 - **Roles**: Different roles such as doctors, nurses, and admin with specific permissions.
@@ -37,14 +37,14 @@ The Hospital Management System is a web application designed to manage hospital 
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/hospital-management-system.git
-    cd hospital-management-system
+    git clone https://github.com/JnJuste/HMSSpring.git
+    cd HMSSpring
     ```
 
 2. **Update application properties:**
     Configure your database connection in `src/main/resources/application.properties`.
     ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/{hospitaldb}
+    spring.datasource.url=jdbc:mysql://localhost:3306/{your_database_name}
     spring.datasource.username={your_username}
     spring.datasource.password={your_password}
     spring.jpa.hibernate.ddl-auto=update
