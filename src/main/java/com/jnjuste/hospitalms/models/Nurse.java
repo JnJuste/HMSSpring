@@ -33,17 +33,14 @@ public class Nurse{
     private String lastName;
 
     @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.NURSE;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
-
-    @ManyToOne
-    private Doctor doctor;
 }

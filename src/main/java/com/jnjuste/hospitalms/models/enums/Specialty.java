@@ -1,19 +1,6 @@
 package com.jnjuste.hospitalms.models.enums;
 
 public enum Specialty {
-    Surgeon,
-    Ophthalmologist,
-    General_Practitioner,
-    Radiologist,
-    Gynecologist,
-    Anesthesiologist,
-    Internist,
-    Dermatology,
-    Cardiologist,
-    Public_Health,
-    ENT,
-    Pediatrician,
-    Urologist,
-    Dentist
+    SURGEON, OPHTHALMOLOGIST, GENERAL_PRACTITIONER, RADIOLOGIST, GYNECOLOGIST, ANESTHESIOLOGIST, INTERNIST, DERMATOLOGY, CARDIOLOGIST, PUBLIC_HEALTH, ENT, PEDIATRICIAN, UROLOGIST, DENTIST, NEUROLOGIST
 
 }

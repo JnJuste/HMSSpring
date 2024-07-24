@@ -35,13 +35,16 @@ public class Doctor{
     private String lastName;
 
     @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private String email;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.DOCTOR;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

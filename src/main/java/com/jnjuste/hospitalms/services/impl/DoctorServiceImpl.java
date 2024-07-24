@@ -44,10 +44,10 @@ public class DoctorServiceImpl implements DoctorService {
             // The doctorID, RegNumber and NationalID remain unchanged
             existingDoctor.setFirstName(doctorDetails.getFirstName());
             existingDoctor.setLastName(doctorDetails.getLastName());
-            existingDoctor.setPassword(doctorDetails.getPassword());
             existingDoctor.setEmail(doctorDetails.getEmail());
-            existingDoctor.setGender(doctorDetails.getGender());
             existingDoctor.setPassword(doctorDetails.getPassword());
+            existingDoctor.setGender(doctorDetails.getGender());
+            existingDoctor.setPhoneNumber(doctorDetails.getPhoneNumber());
             // Update Doctor-specific fields
             existingDoctor.setSpecialty(doctorDetails.getSpecialty());
             existingDoctor.setEmploymentType(doctorDetails.getEmploymentType());

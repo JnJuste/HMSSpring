@@ -38,8 +38,15 @@ public class Appointment {
     private LocalDateTime endTime;
 
     @Column(nullable = false)
-    private int durationMinutes;
+    private Integer durationMinutes;
+
+    @Column(nullable = false)
+    private String reason;
+
+    @ManyToOne
+    @JoinColumn(name = "registered_by", nullable = false)
+    private Nurse registeredBy;
 
     @Enumerated(EnumType.STRING)
-    private AppointmentStatus status;
+    private AppointmentStatus status = AppointmentStatus.SCHEDULED;
 }

@@ -33,6 +33,9 @@ public class Patient {
     @Column(nullable = false)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @Column(nullable = false)
     private Date dateOfBirth;
 
@@ -42,9 +45,6 @@ public class Patient {
     @Column(nullable = false)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
     @Column(nullable = false)
-    private String reason;
+    private String address;
 }

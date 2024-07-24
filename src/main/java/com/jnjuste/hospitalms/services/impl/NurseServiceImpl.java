@@ -44,10 +44,9 @@ public class NurseServiceImpl implements NurseService {
             // The nurseID, RegNumber and NationalID remain unchanged
             existingNurse.setFirstName(nurseDetails.getFirstName());
             existingNurse.setLastName(nurseDetails.getLastName());
-            existingNurse.setPassword(nurseDetails.getPassword());
             existingNurse.setEmail(nurseDetails.getEmail());
+            existingNurse.setPassword(nurseDetails.getPassword());
             existingNurse.setGender(nurseDetails.getGender());
-            existingNurse.setDoctor(nurseDetails.getDoctor());
             // Update Nurse-specific fields if any
             // Currently, there are no Nurse-specific fields in the provided entity
             return nurseRepository.save(existingNurse);
