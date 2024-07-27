@@ -1,6 +1,8 @@
 package com.jnjuste.hospitalms.services;
 
 import com.jnjuste.hospitalms.models.Appointment;
+import com.jnjuste.hospitalms.models.Doctor;
+import com.jnjuste.hospitalms.models.Nurse;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +15,6 @@ public interface AppointmentService {
     Appointment updateAppointment(UUID id, Appointment appointmentDetails);
     void deleteAppointment(UUID id);
     Optional<Appointment> getAppointmentByAppointmentNumber (String appointmentNumber);
+    List<Appointment> getAppointmentsByDoctor(Doctor doctor);
+    List<Appointment> getAppointmentsByNurse(Nurse nurse);
 }

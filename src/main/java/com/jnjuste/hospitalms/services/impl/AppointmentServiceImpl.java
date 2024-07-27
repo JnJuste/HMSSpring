@@ -1,6 +1,8 @@
 package com.jnjuste.hospitalms.services.impl;
 
 import com.jnjuste.hospitalms.models.Appointment;
+import com.jnjuste.hospitalms.models.Doctor;
+import com.jnjuste.hospitalms.models.Nurse;
 import com.jnjuste.hospitalms.repositories.AppointmentRepository;
 import com.jnjuste.hospitalms.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Optional<Appointment> getAppointmentByAppointmentNumber(String appointmentNumber) {
         return appointmentRepository.findByAppointmentNumber(appointmentNumber);
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsByDoctor(Doctor doctor) {
+        return appointmentRepository.findByDoctor(doctor);
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsByNurse(Nurse nurse) {
+        return appointmentRepository.findByRegisteredBy(nurse);
     }
 
 }
