@@ -62,16 +62,37 @@ public class NurseServiceImpl implements NurseService {
         return nurseRepository.findById(id).map(existingNurse -> {
             // Update Nurse fields
             // The nurseID, RegNumber and NationalID remain unchanged
-            existingNurse.setFirstName(nurseDetails.getFirstName());
-            existingNurse.setLastName(nurseDetails.getLastName());
-            existingNurse.setPassword(nurseDetails.getPassword());
-            existingNurse.setEmail(nurseDetails.getEmail());
-            existingNurse.setGender(nurseDetails.getGender());
-            // Update Nurse-specific fields if any
-            // Currently, there are no Nurse-specific fields in the provided entity
-            return nurseRepository.save(existingNurse);
+            StringBuilder updatedFields = new StringBuilder("The following details were updated:\n");
+
+            if (!existingNurse.getFirstName().equals(nurseDetails.getFirstName())) {
+                existingNurse.setFirstName(nurseDetails.getFirstName());
+                updatedFields.append("First Name: ").append(nurseDetails.getFirstName()).append("\n");
+            }
+            if (!existingNurse.getLastName().equals(nurseDetails.getLastName())) {
+                existingNurse.setLastName(nurseDetails.getLastName());
+                updatedFields.append("Last Name: ").append(nurseDetails.getLastName()).append("\n");
+            }
+            if (!existingNurse.getEmail().equals(nurseDetails.getEmail())) {
+                existingNurse.setEmail(nurseDetails.getEmail());
+                updatedFields.append("Email: ").append(nurseDetails.getEmail()).append("\n");
+            }
+            if (!existingNurse.getGender().equals(nurseDetails.getGender())) {
+                existingNurse.setGender(nurseDetails.getGender());
+                updatedFields.append("Gender: ").append(nurseDetails.getGender()).append("\n");
+            }
+
+            Nurse updatedNurse = nurseRepository.save(existingNurse);
+
+            String emailBody = "Dear " + existingNurse.getLastName() + ",\n\n" +
+                    "The following details of your profile have been updated:\n" + updatedFields.toString() +
+                    "\nThank you,\n" +
+                    "Your System";
+            emailServiceImpl.sendEmail(existingNurse.getEmail(), "Profile Update Notification", emailBody);
+
+            return updatedNurse;
         }).orElseThrow(() -> new ResourceNotFoundException("Nurse not found with id: " + id));
     }
+
 
     @Override
     public void deleteNurse(UUID id) {

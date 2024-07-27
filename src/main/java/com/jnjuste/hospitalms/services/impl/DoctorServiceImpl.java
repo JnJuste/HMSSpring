@@ -64,18 +64,45 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findById(id).map(existingDoctor -> {
             // Update Doctor fields
             // The doctorID, RegNumber and NationalID remain unchanged
-            existingDoctor.setFirstName(doctorDetails.getFirstName());
-            existingDoctor.setLastName(doctorDetails.getLastName());
-            existingDoctor.setGender(doctorDetails.getGender());
-            existingDoctor.setEmail(doctorDetails.getEmail());
-            existingDoctor.setPhoneNumber(doctorDetails.getPhoneNumber());
-            // Update Doctor-specific fields
-            existingDoctor.setSpecialty(doctorDetails.getSpecialty());
-            existingDoctor.setEmploymentType(doctorDetails.getEmploymentType());
-            // Don't update appointments here. They should be managed separately
-            return doctorRepository.save(existingDoctor);
+            StringBuilder updatedFields = new StringBuilder();
+
+            if (!existingDoctor.getFirstName().equals(doctorDetails.getFirstName())) {
+                existingDoctor.setFirstName(doctorDetails.getFirstName());
+                updatedFields.append("First Name: ").append(doctorDetails.getFirstName()).append("\n");
+            }
+            if (!existingDoctor.getLastName().equals(doctorDetails.getLastName())) {
+                existingDoctor.setLastName(doctorDetails.getLastName());
+                updatedFields.append("Last Name: ").append(doctorDetails.getLastName()).append("\n");
+            }
+            if (!existingDoctor.getEmail().equals(doctorDetails.getEmail())) {
+                existingDoctor.setEmail(doctorDetails.getEmail());
+                updatedFields.append("Email: ").append(doctorDetails.getEmail()).append("\n");
+            }
+            if (!existingDoctor.getGender().equals(doctorDetails.getGender())) {
+                existingDoctor.setGender(doctorDetails.getGender());
+                updatedFields.append("Gender: ").append(doctorDetails.getGender()).append("\n");
+            }
+            if (!existingDoctor.getSpecialty().equals(doctorDetails.getSpecialty())) {
+                existingDoctor.setSpecialty(doctorDetails.getSpecialty());
+                updatedFields.append("Specialty: ").append(doctorDetails.getSpecialty()).append("\n");
+            }
+            if (!existingDoctor.getEmploymentType().equals(doctorDetails.getEmploymentType())) {
+                existingDoctor.setEmploymentType(doctorDetails.getEmploymentType());
+                updatedFields.append("Employment Type: ").append(doctorDetails.getEmploymentType()).append("\n");
+            }
+
+            Doctor updatedDoctor = doctorRepository.save(existingDoctor);
+
+            String emailBody = "Dear Dr. " + existingDoctor.getFirstName() + ",\n\n" +
+                    "The following details of your profile have been updated:\n" + updatedFields.toString() +
+                    "\nThank you,\n" +
+                    "Hospital Administration";
+            emailServiceImpl.sendEmail(existingDoctor.getEmail(), "Profile Update Notification", emailBody);
+
+            return updatedDoctor;
         }).orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
     }
+
 
     @Override
     public void deleteDoctor(UUID id) {
