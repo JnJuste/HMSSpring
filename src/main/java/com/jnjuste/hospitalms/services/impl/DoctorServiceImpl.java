@@ -3,6 +3,7 @@ package com.jnjuste.hospitalms.services.impl;
 import com.jnjuste.hospitalms.models.Doctor;
 import com.jnjuste.hospitalms.repositories.DoctorRepository;
 import com.jnjuste.hospitalms.services.DoctorService;
+import com.jnjuste.hospitalms.utils.PasswordEncryptionUtil;
 import com.jnjuste.hospitalms.utils.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,8 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor saveDoctor(Doctor doctor) {
         String generatedPassword = PasswordGenerator.generateRandomPassword(8);
-        doctor.setPassword(generatedPassword);
+        String encryptedPassword = PasswordEncryptionUtil.encryptPassword(generatedPassword);
+        doctor.setPassword(encryptedPassword);
         String regNumber = doctorRegNumberServiceImpl.getNextRegNumber();
         doctor.setRegNumber(regNumber);
         Doctor savedDoctor = doctorRepository.save(doctor);

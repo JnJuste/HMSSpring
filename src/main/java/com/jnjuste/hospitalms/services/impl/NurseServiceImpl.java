@@ -3,6 +3,7 @@ package com.jnjuste.hospitalms.services.impl;
 import com.jnjuste.hospitalms.models.Nurse;
 import com.jnjuste.hospitalms.repositories.NurseRepository;
 import com.jnjuste.hospitalms.services.NurseService;
+import com.jnjuste.hospitalms.utils.PasswordEncryptionUtil;
 import com.jnjuste.hospitalms.utils.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ public class NurseServiceImpl implements NurseService {
     @Override
     public Nurse saveNurse(Nurse nurse) {
         String generatedPassword = PasswordGenerator.generateRandomPassword(8);
-        nurse.setPassword(generatedPassword);
+        String encryptedPassword = PasswordEncryptionUtil.encryptPassword(generatedPassword);
+        nurse.setPassword(encryptedPassword);
         String regNumber = nurseRegNumberServiceImpl.getNextRegNumber();
         nurse.setRegNumber(regNumber);
         Nurse savedNurse = nurseRepository.save(nurse);
