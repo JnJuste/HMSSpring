@@ -5,6 +5,7 @@ import com.jnjuste.hospitalms.repositories.DoctorRepository;
 import com.jnjuste.hospitalms.services.DoctorService;
 import com.jnjuste.hospitalms.utils.PasswordEncryptionUtil;
 import com.jnjuste.hospitalms.utils.PasswordGenerator;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setPassword(encryptedPassword);
         String regNumber = doctorRegNumberServiceImpl.getNextRegNumber();
         doctor.setRegNumber(regNumber);
+        doctor.setFirstLogin(true); // Set firstLogin to true
         Doctor savedDoctor = doctorRepository.save(doctor);
         emailServiceImpl.sendEmail(doctor.getEmail(), "Welcome to Our Hospital's Medical Staff",
                 "Dear Dr. " + doctor.getFirstName() + ",\n\n" +
@@ -124,5 +126,41 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Optional<Doctor> getDoctorByRegNumber(String regNumber) {
         return doctorRepository.findByRegNumber(regNumber);
+    }
+
+    @Override
+    public boolean login(String email, String password, HttpSession session) {
+        Optional<Doctor> doctorOpt = doctorRepository.findByEmail(email);
+        if (doctorOpt.isPresent()) {
+            Doctor doctor = doctorOpt.get();
+            String encryptedPassword = PasswordEncryptionUtil.encryptPassword(password);
+            if (doctor.getPassword().equals(encryptedPassword)) {
+                session.setAttribute("doctor", doctor);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isFirstLogin(Doctor doctor) {
+        return doctor.isFirstLogin();
+    }
+
+    @Override
+    public void changePassword(Doctor doctor, String newPassword) {
+        doctor.setPassword(PasswordEncryptionUtil.encryptPassword(newPassword));
+        doctor.setFirstLogin(false);
+        doctorRepository.save(doctor);
+
+        String subject = "Hospital MS - Password Changed Successfully";
+        String body = "Dear Dr. " + doctor.getFirstName() + ",\n\n" +
+                "Your password for the Hospital MS application has been successfully changed.\n\n" +
+                "If you did not initiate this change, please contact our IT support immediately.\n\n" +
+                "For security reasons, we do not include your new password in this email. \n\n" +
+                "Best regards,\n" +
+                "Hospital MS Support Team";
+
+        emailServiceImpl.sendEmail(doctor.getEmail(), subject, body);
     }
 }

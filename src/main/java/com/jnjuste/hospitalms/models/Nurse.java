@@ -43,4 +43,7 @@ public class Nurse{
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Column(nullable = false)
+    private boolean firstLogin; // Add firstLogin flag
 }

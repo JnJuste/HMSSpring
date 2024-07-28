@@ -1,6 +1,7 @@
 package com.jnjuste.hospitalms.services;
 
 import com.jnjuste.hospitalms.models.Nurse;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +16,10 @@ public interface NurseService {
     Optional<Nurse> getNurseByEmail(String email);
     Optional<Nurse> getNurseByNationalID(Integer nationalID);
     Optional<Nurse> getNurseByRegNumber(String regNumber);
+
+    boolean login(String email, String password, HttpSession session);
+
+    boolean isFirstLogin(Nurse nurse);
+
+    void changePassword(Nurse nurse, String newPassword);
 }

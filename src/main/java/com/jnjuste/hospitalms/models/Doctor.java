@@ -54,4 +54,7 @@ public class Doctor{
 
     @Enumerated(EnumType.STRING)
     private EmploymentType employmentType;
+
+    @Column(nullable = false)
+    private boolean firstLogin; // Add firstLogin flag
 }

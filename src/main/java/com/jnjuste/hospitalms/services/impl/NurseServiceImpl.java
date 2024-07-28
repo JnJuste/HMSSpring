@@ -5,6 +5,7 @@ import com.jnjuste.hospitalms.repositories.NurseRepository;
 import com.jnjuste.hospitalms.services.NurseService;
 import com.jnjuste.hospitalms.utils.PasswordEncryptionUtil;
 import com.jnjuste.hospitalms.utils.PasswordGenerator;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class NurseServiceImpl implements NurseService {
         nurse.setPassword(encryptedPassword);
         String regNumber = nurseRegNumberServiceImpl.getNextRegNumber();
         nurse.setRegNumber(regNumber);
+        nurse.setFirstLogin(true); // Set firstLogin to true
         Nurse savedNurse = nurseRepository.save(nurse);
         emailServiceImpl.sendEmail(nurse.getEmail(), "Welcome to Our Hospital's Nursing Team",
                 "Dear " + nurse.getFirstName() + ",\n\n" +
@@ -114,5 +116,40 @@ public class NurseServiceImpl implements NurseService {
     @Override
     public Optional<Nurse> getNurseByRegNumber(String regNumber) {
         return nurseRepository.findByRegNumber(regNumber);
+    }
+    @Override
+    public boolean login(String email, String password, HttpSession session) {
+        Optional<Nurse> nurseOpt = nurseRepository.findByEmail(email);
+        if (nurseOpt.isPresent()) {
+            Nurse nurse = nurseOpt.get();
+            String encryptedPassword = PasswordEncryptionUtil.encryptPassword(password);
+            if (nurse.getPassword().equals(encryptedPassword)) {
+                session.setAttribute("nurse", nurse);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isFirstLogin(Nurse nurse) {
+        return nurse.isFirstLogin();
+    }
+
+    @Override
+    public void changePassword(Nurse nurse, String newPassword) {
+        nurse.setPassword(PasswordEncryptionUtil.encryptPassword(newPassword));
+        nurse.setFirstLogin(false);
+        nurseRepository.save(nurse);
+
+        String subject = "Hospital MS - Password Changed Successfully";
+        String body = "Dear Nurse " + nurse.getFirstName() + ",\n\n" +
+                "Your password for the Hospital MS application has been successfully changed.\n\n" +
+                "If you did not initiate this change, please contact our IT support immediately.\n\n" +
+                "For security reasons, we do not include your new password in this email. \n\n" +
+                "Best regards,\n" +
+                "Hospital MS Support Team";
+
+        emailServiceImpl.sendEmail(nurse.getEmail(), subject, body);
     }
 }
