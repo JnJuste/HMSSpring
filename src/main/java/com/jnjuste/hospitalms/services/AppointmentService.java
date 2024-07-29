@@ -3,6 +3,7 @@ package com.jnjuste.hospitalms.services;
 import com.jnjuste.hospitalms.models.Appointment;
 import com.jnjuste.hospitalms.models.Doctor;
 import com.jnjuste.hospitalms.models.Nurse;
+import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +18,9 @@ public interface AppointmentService {
     Optional<Appointment> getAppointmentByAppointmentNumber (String appointmentNumber);
     List<Appointment> getAppointmentsByDoctor(Doctor doctor);
     List<Appointment> getAppointmentsByNurse(Nurse nurse);
+
+    // For Doctor Only
+    List<Appointment> getScheduledAppointmentsByDoctor(UUID doctorId);
+    Optional<Appointment> updateAppointmentStatus(UUID appointmentId, AppointmentStatus status);
+
 }

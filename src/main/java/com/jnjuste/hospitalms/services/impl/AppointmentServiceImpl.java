@@ -3,6 +3,7 @@ package com.jnjuste.hospitalms.services.impl;
 import com.jnjuste.hospitalms.models.Appointment;
 import com.jnjuste.hospitalms.models.Doctor;
 import com.jnjuste.hospitalms.models.Nurse;
+import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 import com.jnjuste.hospitalms.repositories.AppointmentRepository;
 import com.jnjuste.hospitalms.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<Appointment> getAppointmentsByNurse(Nurse nurse) {
         return appointmentRepository.findByRegisteredBy(nurse);
+    }
+
+    // Doctor Scheduled Appointments
+    @Override
+    public List<Appointment> getScheduledAppointmentsByDoctor(UUID doctorId) {
+        return appointmentRepository.findByDoctor_DoctorIDAndStatus(doctorId, AppointmentStatus.SCHEDULED);
+    }
+
+    @Override
+    public Optional<Appointment> updateAppointmentStatus(UUID appointmentId, AppointmentStatus status) {
+        return appointmentRepository.findById(appointmentId).map(appointment -> {
+            appointment.setStatus(status);
+            return appointmentRepository.save(appointment);
+        });
     }
 
 }

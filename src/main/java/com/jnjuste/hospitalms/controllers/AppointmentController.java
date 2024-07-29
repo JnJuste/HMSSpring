@@ -1,8 +1,11 @@
 package com.jnjuste.hospitalms.controllers;
 
 import com.jnjuste.hospitalms.models.Appointment;
+import com.jnjuste.hospitalms.models.Doctor;
+import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 import com.jnjuste.hospitalms.services.AppointmentService;
 import com.jnjuste.hospitalms.services.impl.ResourceNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +47,30 @@ public class AppointmentController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // Doctor Scheduled Appointment Controllers Start
+    @GetMapping("/scheduled")
+    public ResponseEntity<List<Appointment>> getScheduledAppointments(HttpSession session) {
+        Doctor doctor = (Doctor) session.getAttribute("doctor");
+        if (doctor == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        List<Appointment> appointments = appointmentService.getScheduledAppointmentsByDoctor(doctor.getDoctorID());
+        return ResponseEntity.ok(appointments);
+    }
+
+    @PutMapping("/{appointmentId}/status")
+    public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable UUID appointmentId,
+                                                               @RequestParam AppointmentStatus status,
+                                                               HttpSession session) {
+        Doctor doctor = (Doctor) session.getAttribute("doctor");
+        if (doctor == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        Optional<Appointment> updatedAppointment = appointmentService.updateAppointmentStatus(appointmentId, status);
+        return updatedAppointment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Doctor Scheduled Appointment Controllers End
     @PutMapping("/{id}")
     public ResponseEntity<Appointment> updateAppointment(@PathVariable UUID id, @RequestBody Appointment appointmentDetails) {
         try {
@@ -58,4 +85,6 @@ public class AppointmentController {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

@@ -3,6 +3,7 @@ package com.jnjuste.hospitalms.repositories;
 import com.jnjuste.hospitalms.models.Appointment;
 import com.jnjuste.hospitalms.models.Doctor;
 import com.jnjuste.hospitalms.models.Nurse;
+import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByRegisteredBy(Nurse nurse);
 
     List<Appointment> findByDoctor(Doctor doctor);
+    List<Appointment> findByDoctor_DoctorIDAndStatus(UUID doctorId, AppointmentStatus status);
 }
