@@ -9,5 +9,5 @@ public class LoginDTO {
     private String email;
     private String password;
 
-    // Getters and Setters
+    // Getters and Setters implemented using lombok
 }
