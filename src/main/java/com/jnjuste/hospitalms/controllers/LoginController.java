@@ -72,9 +72,23 @@ public class LoginController {
         }
         return ResponseEntity.status(401).body("Unauthorized.");
     }
-
+    // Session Time-out Message(30 min by default)
     @GetMapping("/session-timeout")
     public ResponseEntity<String> sessionTimeout() {
         return ResponseEntity.status(401).body("Session has timed out. Please log in again.");
+    }
+    // Logout For Doctor
+    @GetMapping("/logout/doctor")
+    public ResponseEntity<String> logoutDoctor(HttpSession session) {
+        session.removeAttribute("doctor");
+        session.invalidate();
+        return ResponseEntity.ok("Logout successful.");
+    }
+    // Logout For Nurse
+    @GetMapping("/logout/nurse")
+    public ResponseEntity<String> logoutNurse(HttpSession session) {
+        session.removeAttribute("nurse");
+        session.invalidate();
+        return ResponseEntity.ok("Logout successful.");
     }
 }

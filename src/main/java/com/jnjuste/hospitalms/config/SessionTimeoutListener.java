@@ -9,7 +9,8 @@ public class SessionTimeoutListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        // Session created
+        // Set the session timeout interval in seconds (e.g., 30 minutes)
+        event.getSession().setMaxInactiveInterval(30 * 60);
     }
 
     @Override
