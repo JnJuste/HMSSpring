@@ -1,17 +1,12 @@
 package com.jnjuste.hospitalms.services.impl;
 
 import com.jnjuste.hospitalms.models.Appointment;
-import com.jnjuste.hospitalms.models.Doctor;
-import com.jnjuste.hospitalms.models.Nurse;
-import com.jnjuste.hospitalms.models.Patient;
 import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 import com.jnjuste.hospitalms.repositories.AppointmentRepository;
-import com.jnjuste.hospitalms.repositories.NurseRepository;
 import com.jnjuste.hospitalms.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,13 +15,11 @@ import java.util.UUID;
 public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentNumberServiceImpl appointmentNumberServiceImpl;
-    private final NurseRepository nurseRepository;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentNumberServiceImpl appointmentNumberServiceImpl, NurseRepository nurseRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentNumberServiceImpl appointmentNumberServiceImpl) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentNumberServiceImpl = appointmentNumberServiceImpl;
-        this.nurseRepository = nurseRepository;
     }
 
     @Override
@@ -71,7 +64,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findByAppointmentNumber(appointmentNumber);
     }
 
-
     // Doctor Scheduled Appointments
     @Override
     public List<Appointment> getScheduledAppointmentsByDoctor(UUID doctorId) {
@@ -84,32 +76,5 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setStatus(status);
             return appointmentRepository.save(appointment);
         });
-    }
-
-    @Override
-    public Optional<Appointment> createAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime, String reason, UUID nurseId) {
-        if (isScheduleConflict(doctor, startTime, endTime)) {
-            return Optional.empty();
-        }
-        Nurse nurse = nurseRepository.findById(nurseId).orElseThrow(() -> new ResourceNotFoundException("Nurse not found with id: " + nurseId));
-        Appointment appointment = Appointment.builder()
-                .patient(patient)
-                .doctor(doctor)
-                .startTime(startTime)
-                .endTime(endTime)
-                .durationMinutes((int) java.time.Duration.between(startTime, endTime).toMinutes())
-                .reason(reason)
-                .registeredBy(nurse)
-                .status(AppointmentStatus.SCHEDULED)
-                .build();
-        return Optional.of(appointmentRepository.save(appointment));
-    }
-
-    @Override
-    public boolean isScheduleConflict(Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) {
-        List<Appointment> appointments = appointmentRepository.findByDoctor_DoctorIDAndStatus(doctor.getDoctorID(), AppointmentStatus.SCHEDULED);
-        return appointments.stream().anyMatch(appointment ->
-                (appointment.getStartTime().isBefore(endTime) && appointment.getEndTime().isAfter(startTime))
-        );
     }
 }
