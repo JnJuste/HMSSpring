@@ -9,13 +9,11 @@ import com.jnjuste.hospitalms.services.PatientService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/nurse")
@@ -42,6 +40,16 @@ public class AuthNurseController {
             return ResponseEntity.status(401).body("Unauthorized.");
         }
 
+        // Check if the patient already has an appointment
+        List<Appointment> patientAppointments = appointmentService.getAllAppointments().stream()
+                .filter(a -> a.getPatient().getPatientID().equals(appointment.getPatient().getPatientID()))
+                .collect(Collectors.toList());
+
+        if (!patientAppointments.isEmpty()) {
+            return ResponseEntity.status(409).body("Patient already has an appointment.");
+        }
+
+        // Check for appointment collision with the same doctor
         List<Appointment> existingAppointments = appointmentService.getAllAppointments();
         for (Appointment existingAppointment : existingAppointments) {
             if (existingAppointment.getDoctor().getDoctorID().equals(appointment.getDoctor().getDoctorID())) {
@@ -59,5 +67,21 @@ public class AuthNurseController {
         appointment.setRegisteredBy(nurse);
         appointmentService.saveAppointment(appointment);
         return ResponseEntity.ok("Appointment created successfully.");
+    }
+
+    @GetMapping("/patients")
+    public ResponseEntity<List<Patient>> getPatientsByNurse(HttpSession session) {
+        Nurse nurse = (Nurse) session.getAttribute("nurse");
+        if (nurse == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+
+        List<Patient> patients = appointmentService.getAllAppointments().stream()
+                .filter(appointment -> appointment.getRegisteredBy().getNurseID().equals(nurse.getNurseID()))
+                .map(Appointment::getPatient)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(patients);
     }
 }
