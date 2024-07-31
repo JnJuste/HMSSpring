@@ -24,6 +24,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient savePatient(Patient patient) {
+        if (patient.getEmail() == null || patient.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Patient email cannot be null or empty");
+        }
         patient.setPatientNumber(patientNumberServiceImpl.getNextPatientNumber());
         return patientRepository.save(patient);
     }
@@ -59,6 +62,7 @@ public class PatientServiceImpl implements PatientService {
     public void deletePatient(UUID id) {
         patientRepository.deleteById(id);
     }
+
     @Override
     public Optional<Patient> getPatientByNationalID(Integer nationalID) {
         return patientRepository.findByNationalID(nationalID);

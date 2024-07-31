@@ -1,10 +1,12 @@
 package com.jnjuste.hospitalms.controllers;
 
 import com.jnjuste.hospitalms.models.Appointment;
+import com.jnjuste.hospitalms.models.Doctor;
 import com.jnjuste.hospitalms.models.Nurse;
 import com.jnjuste.hospitalms.models.Patient;
 import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 import com.jnjuste.hospitalms.services.AppointmentService;
+import com.jnjuste.hospitalms.services.DoctorService;
 import com.jnjuste.hospitalms.services.PatientService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,16 +23,21 @@ import java.util.stream.Collectors;
 public class AuthNurseController {
 
     private final PatientService patientService;
+    private final DoctorService doctorService;
     private final AppointmentService appointmentService;
 
     @Autowired
-    public AuthNurseController(PatientService patientService, AppointmentService appointmentService) {
+    public AuthNurseController(PatientService patientService, DoctorService doctorService, AppointmentService appointmentService) {
         this.patientService = patientService;
+        this.doctorService = doctorService;
         this.appointmentService = appointmentService;
     }
 
     @PostMapping("/patient")
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+        if (patient.getEmail() == null || patient.getEmail().isEmpty()) {
+            return ResponseEntity.status(400).body(null); // Bad request if email is null or empty
+        }
         return ResponseEntity.ok(patientService.savePatient(patient));
     }
 
@@ -40,9 +48,23 @@ public class AuthNurseController {
             return ResponseEntity.status(401).body("Unauthorized.");
         }
 
+        // Ensure doctor is fully populated
+        Optional<Doctor> doctorOpt = doctorService.getDoctorById(appointment.getDoctor().getDoctorID());
+        if (doctorOpt.isEmpty() || doctorOpt.get().getEmail() == null || doctorOpt.get().getEmail().isEmpty()) {
+            return ResponseEntity.status(400).body("Doctor email is missing.");
+        }
+        Doctor doctor = doctorOpt.get();
+
+        // Ensure patient is fully populated
+        Optional<Patient> patientOpt = patientService.getPatientById(appointment.getPatient().getPatientID());
+        if (patientOpt.isEmpty() || patientOpt.get().getEmail() == null || patientOpt.get().getEmail().isEmpty()) {
+            return ResponseEntity.status(400).body("Patient email is missing.");
+        }
+        Patient patient = patientOpt.get();
+
         // Check if the patient already has an appointment
         List<Appointment> patientAppointments = appointmentService.getAllAppointments().stream()
-                .filter(a -> a.getPatient().getPatientID().equals(appointment.getPatient().getPatientID()))
+                .filter(a -> a.getPatient().getPatientID().equals(patient.getPatientID()))
                 .collect(Collectors.toList());
 
         if (!patientAppointments.isEmpty()) {
@@ -52,7 +74,7 @@ public class AuthNurseController {
         // Check for appointment collision with the same doctor
         List<Appointment> existingAppointments = appointmentService.getAllAppointments();
         for (Appointment existingAppointment : existingAppointments) {
-            if (existingAppointment.getDoctor().getDoctorID().equals(appointment.getDoctor().getDoctorID())) {
+            if (existingAppointment.getDoctor().getDoctorID().equals(doctor.getDoctorID())) {
                 LocalDateTime newStart = appointment.getStartTime();
                 LocalDateTime newEnd = appointment.getEndTime();
                 LocalDateTime existingStart = existingAppointment.getStartTime();
@@ -63,6 +85,8 @@ public class AuthNurseController {
             }
         }
 
+        appointment.setDoctor(doctor);
+        appointment.setPatient(patient);
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         appointment.setRegisteredBy(nurse);
         appointmentService.saveAppointment(appointment);

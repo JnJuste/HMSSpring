@@ -18,4 +18,6 @@ public interface AppointmentService {
     // For Doctor Login Only
     List<Appointment> getScheduledAppointmentsByDoctor(UUID doctorId);
     Optional<Appointment> updateAppointmentStatus(UUID appointmentId, AppointmentStatus status);
+    void sendAppointmentEmails(Appointment appointment);
+
 }

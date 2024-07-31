@@ -19,7 +19,6 @@ public class NurseServiceImpl implements NurseService {
     private final NurseRegNumberServiceImpl nurseRegNumberServiceImpl;
     private final EmailServiceImpl emailServiceImpl;
 
-
     @Autowired
     public NurseServiceImpl(NurseRepository nurseRepository, NurseRegNumberServiceImpl nurseRegNumberServiceImpl, EmailServiceImpl emailServiceImpl) {
         this.nurseRepository = nurseRepository;
@@ -96,7 +95,6 @@ public class NurseServiceImpl implements NurseService {
             return updatedNurse;
         }).orElseThrow(() -> new ResourceNotFoundException("Nurse not found with id: " + id));
     }
-
 
     @Override
     public void deleteNurse(UUID id) {

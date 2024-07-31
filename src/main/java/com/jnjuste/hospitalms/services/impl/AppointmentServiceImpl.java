@@ -4,6 +4,8 @@ import com.jnjuste.hospitalms.models.Appointment;
 import com.jnjuste.hospitalms.models.enums.AppointmentStatus;
 import com.jnjuste.hospitalms.repositories.AppointmentRepository;
 import com.jnjuste.hospitalms.services.AppointmentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +15,25 @@ import java.util.UUID;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
+    private static final Logger logger = LoggerFactory.getLogger(AppointmentServiceImpl.class);
+
     private final AppointmentRepository appointmentRepository;
     private final AppointmentNumberServiceImpl appointmentNumberServiceImpl;
+    private final EmailServiceImpl emailServiceImpl;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentNumberServiceImpl appointmentNumberServiceImpl) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AppointmentNumberServiceImpl appointmentNumberServiceImpl, EmailServiceImpl emailServiceImpl) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentNumberServiceImpl = appointmentNumberServiceImpl;
+        this.emailServiceImpl = emailServiceImpl;
     }
 
     @Override
     public Appointment saveAppointment(Appointment appointment) {
         appointment.setAppointmentNumber(appointmentNumberServiceImpl.getNextAppointmentNumber());
-        return appointmentRepository.save(appointment);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        sendAppointmentEmails(savedAppointment);
+        return savedAppointment;
     }
 
     @Override
@@ -54,6 +62,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             return appointmentRepository.save(existingAppointment);
         }).orElseThrow(() -> new ResourceNotFoundException("Appointment not found with id: " + id));
     }
+
     @Override
     public void deleteAppointment(UUID id) {
         appointmentRepository.deleteById(id);
@@ -76,5 +85,58 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointment.setStatus(status);
             return appointmentRepository.save(appointment);
         });
+    }
+
+    @Override
+    public void sendAppointmentEmails(Appointment appointment) {
+        // Email to Doctor
+        String doctorEmail = appointment.getDoctor().getEmail();
+        if (doctorEmail != null && !doctorEmail.isEmpty()) {
+            String doctorSubject = "New Appointment Scheduled";
+            String doctorBody = "Dear Dr. " + appointment.getDoctor().getFirstName() + ",\n\n" +
+                    "A new appointment has been scheduled.\n\n" +
+                    "Patient Details:\n" +
+                    "First Name: " + appointment.getPatient().getFirstName() + "\n" +
+                    "Last Name: " + appointment.getPatient().getLastName() + "\n" +
+                    "Patient Number: " + appointment.getPatient().getPatientNumber() + "\n\n" +
+                    "Appointment Details:\n" +
+                    "Start Time: " + appointment.getStartTime() + "\n" +
+                    "End Time: " + appointment.getEndTime() + "\n" +
+                    "Reason: " + appointment.getReason() + "\n\n" +
+                    "Best regards,\n" +
+                    "Hospital Administration";
+
+            logger.info("Sending appointment email to doctor: {}", doctorEmail);
+            emailServiceImpl.sendEmail(doctorEmail, doctorSubject, doctorBody);
+            logger.info("Appointment email sent to doctor: {}", doctorEmail);
+        } else {
+            logger.error("Doctor email is null or empty for appointment: {}", appointment.getAppointmentNumber());
+        }
+
+        // Email to Patient
+        String patientEmail = appointment.getPatient().getEmail();
+        if (patientEmail != null && !patientEmail.isEmpty()) {
+            String patientSubject = "New Appointment Scheduled";
+            String patientBody = "Dear " + appointment.getPatient().getFirstName() + ",\n\n" +
+                    "A new appointment has been scheduled.\n\n" +
+                    "Doctor Details:\n" +
+                    "First Name: " + appointment.getDoctor().getFirstName() + "\n" +
+                    "Last Name: " + appointment.getDoctor().getLastName() + "\n" +
+                    "Registration Number: " + appointment.getDoctor().getRegNumber() + "\n\n" +
+                    "Nurse Details:\n" +
+                    "Registered By: Nurse " + appointment.getRegisteredBy().getFirstName() + " " + appointment.getRegisteredBy().getLastName() + "\n\n" +
+                    "Appointment Details:\n" +
+                    "Start Time: " + appointment.getStartTime() + "\n" +
+                    "End Time: " + appointment.getEndTime() + "\n" +
+                    "Reason: " + appointment.getReason() + "\n\n" +
+                    "Best regards,\n" +
+                    "Hospital Administration";
+
+            logger.info("Sending appointment email to patient: {}", patientEmail);
+            emailServiceImpl.sendEmail(patientEmail, patientSubject, patientBody);
+            logger.info("Appointment email sent to patient: {}", patientEmail);
+        } else {
+            logger.error("Patient email is null or empty for appointment: {}", appointment.getAppointmentNumber());
+        }
     }
 }

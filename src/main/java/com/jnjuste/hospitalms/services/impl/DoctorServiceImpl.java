@@ -19,8 +19,6 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRegNumberServiceImpl doctorRegNumberServiceImpl;
     private final EmailServiceImpl emailServiceImpl;
 
-
-
     @Autowired
     public DoctorServiceImpl(DoctorRepository doctorRepository, DoctorRegNumberServiceImpl doctorRegNumberServiceImpl, EmailServiceImpl emailServiceImpl) {
         this.doctorRepository = doctorRepository;
@@ -51,7 +49,6 @@ public class DoctorServiceImpl implements DoctorService {
                         "Hospital Administration");
         return savedDoctor;
     }
-
 
     @Override
     public List<Doctor> getAllDoctors() {
@@ -106,7 +103,6 @@ public class DoctorServiceImpl implements DoctorService {
             return updatedDoctor;
         }).orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + id));
     }
-
 
     @Override
     public void deleteDoctor(UUID id) {
