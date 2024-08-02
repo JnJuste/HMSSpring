@@ -28,6 +28,7 @@ public class LoginController {
         boolean success = doctorService.login(loginDTO.getEmail(), loginDTO.getPassword(), session);
         if (success) {
             Doctor doctor = (Doctor) session.getAttribute("doctor");
+            System.out.println("Doctor session: " + session.getId() + " - " + doctor.getEmail());
             if (doctorService.isFirstLogin(doctor)) {
                 return ResponseEntity.ok("First login. Please change your password.");
             }
@@ -42,6 +43,7 @@ public class LoginController {
         boolean success = nurseService.login(loginDTO.getEmail(), loginDTO.getPassword(), session);
         if (success) {
             Nurse nurse = (Nurse) session.getAttribute("nurse");
+            System.out.println("Nurse session: " + session.getId() + " - " + nurse.getEmail());
             if (nurseService.isFirstLogin(nurse)) {
                 return ResponseEntity.ok("First login. Please change your password.");
             }
@@ -55,10 +57,12 @@ public class LoginController {
     public ResponseEntity<String> changeDoctorPassword(@RequestParam String newPassword, HttpSession session) {
         Doctor doctor = (Doctor) session.getAttribute("doctor");
         if (doctor != null) {
+            System.out.println("Changing password for doctor: " + doctor.getEmail() + " Session ID: " + session.getId());
             doctorService.changePassword(doctor, newPassword);
             session.removeAttribute("doctor");
             return ResponseEntity.ok("Password changed successfully.");
         }
+        System.out.println("Unauthorized attempt to change password. Session ID: " + session.getId());
         return ResponseEntity.status(401).body("Unauthorized.");
     }
 
@@ -66,25 +70,27 @@ public class LoginController {
     public ResponseEntity<String> changeNursePassword(@RequestParam String newPassword, HttpSession session) {
         Nurse nurse = (Nurse) session.getAttribute("nurse");
         if (nurse != null) {
+            System.out.println("Changing password for nurse: " + nurse.getEmail() + " Session ID: " + session.getId());
             nurseService.changePassword(nurse, newPassword);
             session.removeAttribute("nurse");
             return ResponseEntity.ok("Password changed successfully.");
         }
+        System.out.println("Unauthorized attempt to change password. Session ID: " + session.getId());
         return ResponseEntity.status(401).body("Unauthorized.");
     }
-    // Session Time-out Message(30 min by default)
+
     @GetMapping("/session-timeout")
     public ResponseEntity<String> sessionTimeout() {
         return ResponseEntity.status(401).body("Session has timed out. Please log in again.");
     }
-    // Logout For Doctor
+
     @GetMapping("/logout/doctor")
     public ResponseEntity<String> logoutDoctor(HttpSession session) {
         session.removeAttribute("doctor");
         session.invalidate();
         return ResponseEntity.ok("Logout successful.");
     }
-    // Logout For Nurse
+
     @GetMapping("/logout/nurse")
     public ResponseEntity<String> logoutNurse(HttpSession session) {
         session.removeAttribute("nurse");
