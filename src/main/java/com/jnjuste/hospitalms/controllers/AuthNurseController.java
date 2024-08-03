@@ -32,7 +32,23 @@ public class AuthNurseController {
         this.doctorService = doctorService;
         this.appointmentService = appointmentService;
     }
-
+    // Login Nurse Add New Patient (POST Method)
+    // URL example used in Postman: http://localhost:7777/api/nurse/patient
+    // After that Select "Body" > then "raw"
+    /*
+    {
+    "nationalID": 119_ç68009,
+    "firstName": "Jean Juste",
+    "lastName": "IRAKOZE",
+    "dateOfBirth": "1989-05-16",
+    "phoneNumber": "+250790439778",
+    "email": "jeanjusteirakoze@gmail.com",
+    "gender": "M",
+    "address": "Dortmund, GERMANY"
+    }
+    */
+    // Then Send
+    // Remember that Gender is an enum having M, F, OTHER
     @PostMapping("/patient")
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
         if (patient.getEmail() == null || patient.getEmail().isEmpty()) {
@@ -41,6 +57,24 @@ public class AuthNurseController {
         return ResponseEntity.ok(patientService.savePatient(patient));
     }
 
+    // Login Nurse Make an Appointment for A Patient he/she created (POST Method)
+    // URL example used in Postman: http://localhost:7777/api/nurse/appointment
+    // After that Select "Body" > then "raw"
+    /*
+    {
+    "doctor": {
+        "doctorID": "930f8989-e4d2-46a1-9d68-a13c4710f309"
+    },
+    "patient": {
+        "patientID": "ebc115fd-ae4d-4db8-93f0-8ad110cdc098"
+    },
+    "startTime": "2024-08-02T09:30:00",
+    "endTime": "2024-08-02T10:00:00",
+    "durationMinutes": 30,
+    "reason": "Fever with diarrhea symptoms"
+    }
+    */
+    // Then click on Send
     @PostMapping("/appointment")
     public ResponseEntity<String> createAppointment(@RequestBody Appointment appointment, HttpSession session) {
         Nurse nurse = (Nurse) session.getAttribute("nurse");
@@ -92,7 +126,9 @@ public class AuthNurseController {
         appointmentService.saveAppointment(appointment);
         return ResponseEntity.ok("Appointment created successfully.");
     }
-
+    // Get Patients by Nurse Logged In (GET Method)
+    // URL example used in Postman: http://localhost:7777/api/nurse/patients
+    // Then click on Send
     @GetMapping("/patients")
     public ResponseEntity<List<Patient>> getPatientsByNurse(HttpSession session) {
         Nurse nurse = (Nurse) session.getAttribute("nurse");

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
 
     private final DoctorService doctorService;
-
     private final NurseService nurseService;
+
     @Autowired
     public LoginController(DoctorService doctorService, NurseService nurseService) {
         this.doctorService = doctorService;
@@ -88,6 +88,7 @@ public class LoginController {
     public ResponseEntity<String> logoutDoctor(HttpSession session) {
         session.removeAttribute("doctor");
         session.invalidate();
+        System.out.println("Session invalidated for doctor: " + session.getId());
         return ResponseEntity.ok("Logout successful.");
     }
 
@@ -95,6 +96,8 @@ public class LoginController {
     public ResponseEntity<String> logoutNurse(HttpSession session) {
         session.removeAttribute("nurse");
         session.invalidate();
+        System.out.println("Session invalidated for nurse: " + session.getId());
         return ResponseEntity.ok("Logout successful.");
     }
 }
+

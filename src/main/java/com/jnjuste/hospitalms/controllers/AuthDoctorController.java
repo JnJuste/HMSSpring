@@ -26,6 +26,12 @@ public class AuthDoctorController {
         this.appointmentService = appointmentService;
     }
 
+    // Get Appointments by Status(SCHEDULED, COMPLETED, RESCHEDULED, CANCELED) (GET method)
+    // URL example used in Postman: http://localhost:7777/api/doctor/appointments/SCHEDULED
+    // URL example used in Postman: http://localhost:7777/api/doctor/appointments/COMPLETED
+    // URL example used in Postman: http://localhost:7777/api/doctor/appointments/RESCHEDULED
+    // URL example used in Postman: http://localhost:7777/api/doctor/appointments/CANCELED
+    // Then Send
     @GetMapping("/appointments/{status}")
     public ResponseEntity<List<Appointment>> getAppointmentsByStatus(@PathVariable AppointmentStatus status, HttpSession session) {
         Doctor doctor = (Doctor) session.getAttribute("doctor");
@@ -36,6 +42,11 @@ public class AuthDoctorController {
         return ResponseEntity.ok(appointments);
     }
 
+    // Update Appointment Status(COMPLETED, CANCELED) (PUT  Method)
+    // URL example used in Postman: http://localhost:7777/api/doctor/appointments/0334ba9c-400e-47d8-9707-32b50de78262/status
+    // After that Select "Body" > then "x-www-form-urlencoded"
+    // Key: "status", Value: "CANCELED" or "COMPLETED"
+    // Then Send
     @PutMapping("/appointments/{appointmentId}/status")
     public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable UUID appointmentId,
                                                                @RequestParam AppointmentStatus status,
@@ -48,6 +59,12 @@ public class AuthDoctorController {
         return updatedAppointment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // Doctor Reschedule Appointment (PUT Method)
+    // URL example used in Postman: http://localhost:7777/api/doctor/appointments/36c8d5ed-8797-4e29-ac53-e55140273118/reschedule
+    // After that Select "Body" > then "x-www-form-urlencoded"
+    // Key: "newStartTime", Value: "2024-08-03T10:00:00"
+    // Key: "newEndTime", Value: "2024-08-03T10:03:00"
+    // Then Send
     @PutMapping("/appointments/{appointmentId}/reschedule")
     public ResponseEntity<String> rescheduleAppointment(@PathVariable UUID appointmentId,
                                                         @RequestParam String newStartTime,
