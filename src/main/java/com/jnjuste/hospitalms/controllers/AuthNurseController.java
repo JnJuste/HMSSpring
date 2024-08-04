@@ -37,7 +37,7 @@ public class AuthNurseController {
     // After that Select "Body" > then "raw"
     /*
     {
-    "nationalID": 119_ç68009,
+    "nationalID": 119968009,
     "firstName": "Jean Juste",
     "lastName": "IRAKOZE",
     "dateOfBirth": "1989-05-16",
@@ -143,5 +143,18 @@ public class AuthNurseController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(patients);
+    }
+    @GetMapping("/me")
+    public ResponseEntity<Nurse> getCurrentNurse(HttpSession session) {
+        Nurse nurse = (Nurse) session.getAttribute("nurse");
+        if (nurse == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        return ResponseEntity.ok(nurse);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<Doctor>> getAllDoctors() {
+        List<Doctor> doctors = doctorService.getAllDoctors();
+        return ResponseEntity.ok(doctors);
     }
 }

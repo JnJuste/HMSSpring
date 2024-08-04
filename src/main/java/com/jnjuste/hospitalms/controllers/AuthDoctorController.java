@@ -93,4 +93,13 @@ public class AuthDoctorController {
             return ResponseEntity.status(409).body(e.getMessage());
         }
     }
+    @GetMapping("/me")
+    public ResponseEntity<Doctor> getCurrentDoctor(HttpSession session) {
+        Doctor doctor = (Doctor) session.getAttribute("doctor");
+        if (doctor == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        return ResponseEntity.ok(doctor);
+    }
+
 }

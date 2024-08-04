@@ -25,7 +25,7 @@ public class RoleFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = httpRequest.getSession(false);
+        HttpSession session = httpRequest.getSession(false); // Do not create a new session if it doesn't exist
 
         String requestURI = httpRequest.getRequestURI();
         boolean isDoctorEndpoint = requestURI.startsWith("/api/doctor/");
